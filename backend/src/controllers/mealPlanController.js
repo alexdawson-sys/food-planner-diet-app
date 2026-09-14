@@ -2,10 +2,12 @@ const MealPlan = require('../models/MealPlan')
 const MealTemplate = require('../models/MealTemplate')
 
 const mealKeys = ['breakfast', 'lunch', 'dinner', 'snacks']
+const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/
 
 async function getMealPlanByDate(req, res, next) {
   try {
     const { date } = req.params
+    if (!isoDatePattern.test(date)) return res.status(400).json({ message: 'Invalid date format' })
     const mealPlan = await MealPlan.findOne({ user: req.user.id, date })
     return res.json(mealPlan || { user: req.user.id, date, meals: { breakfast: [], lunch: [], dinner: [], snacks: [] } })
   } catch (error) {
@@ -16,6 +18,7 @@ async function getMealPlanByDate(req, res, next) {
 async function addMeal(req, res, next) {
   try {
     const { date, mealType, item } = req.body
+    if (!isoDatePattern.test(date)) return res.status(400).json({ message: 'Invalid date format' })
     if (!mealKeys.includes(mealType)) return res.status(400).json({ message: 'Invalid meal type' })
 
     const mealPlan =
@@ -51,6 +54,7 @@ async function listTemplates(req, res, next) {
 async function applyTemplate(req, res, next) {
   try {
     const { templateId, startDate } = req.body
+    if (!isoDatePattern.test(startDate)) return res.status(400).json({ message: 'Invalid start date format' })
     const template = await MealTemplate.findOne({ _id: templateId, user: req.user.id })
     if (!template) return res.status(404).json({ message: 'Template not found' })
 

@@ -1,7 +1,9 @@
 const express = require('express')
 const cors = require('cors')
 const morgan = require('morgan')
+const mongoSanitize = require('express-mongo-sanitize')
 const errorHandler = require('./middleware/errorHandler')
+const { authLimiter, apiLimiter } = require('./middleware/rateLimit')
 
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
@@ -17,10 +19,12 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 app.use(morgan('dev'))
+app.use(mongoSanitize())
+app.use('/api', apiLimiter)
 
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }))
 
-app.use('/api/auth', authRoutes)
+app.use('/api/auth', authLimiter, authRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/foods', foodRoutes)
 app.use('/api/recipes', recipeRoutes)

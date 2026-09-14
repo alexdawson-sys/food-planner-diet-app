@@ -1,5 +1,6 @@
 const MealPlan = require('../models/MealPlan')
 const User = require('../models/User')
+const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/
 
 function sumMeals(meals) {
   const totals = {
@@ -29,6 +30,9 @@ function sumMeals(meals) {
 async function getDailySummary(req, res, next) {
   try {
     const date = req.query.date || new Date().toISOString().slice(0, 10)
+    if (typeof date !== 'string' || !isoDatePattern.test(date)) {
+      return res.status(400).json({ message: 'Invalid date format' })
+    }
     const [mealPlan, user] = await Promise.all([
       MealPlan.findOne({ user: req.user.id, date }),
       User.findById(req.user.id).select('targets'),
