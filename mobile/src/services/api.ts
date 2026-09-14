@@ -1,0 +1,23 @@
+export const apiConfig = {
+  baseUrl: 'http://localhost:4000',
+  endpoints: {
+    register: '/auth/register',
+    login: '/auth/login',
+    refresh: '/auth/refresh-token',
+    profile: '/users/profile',
+    goals: '/users/goals',
+    weight: '/weight',
+    weightHistory: '/weight/history',
+    weightStats: '/weight/stats',
+    meals: '/meals',
+    mealsToday: '/meals/today',
+    foodsSearch: '/foods/search',
+    foodsCustom: '/foods/custom',
+    foodsFavorites: '/foods/favorites',
+    recipes: '/recipes',
+    mealPlans: '/meal-plans',
+    analyticsDaily: '/analytics/daily',
+    analyticsWeekly: '/analytics/weekly',
+    analyticsMonthly: '/analytics/monthly',
+  },
+};

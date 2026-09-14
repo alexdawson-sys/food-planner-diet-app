@@ -1,0 +1,17 @@
+{
+  "name": "food-planner-diet-app",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "mobile",
+    "web",
+    "backend"
+  ],
+  "scripts": {
+    "mobile": "npm --prefix mobile start",
+    "web": "npm --prefix web run dev",
+    "web:build": "npm --prefix web run build",
+    "backend": "npm --prefix backend run dev",
+    "backend:start": "npm --prefix backend start"
+  }
+}
