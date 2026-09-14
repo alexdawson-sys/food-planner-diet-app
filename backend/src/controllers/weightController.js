@@ -3,13 +3,23 @@ import { User } from '../models/User.js';
 
 export async function createWeightEntry(req, res, next) {
   try {
+    const value = Number(req.body.value);
+    if (!Number.isFinite(value) || value <= 0) {
+      return res.status(400).json({ message: 'A valid weight value is required' });
+    }
+
+    const loggedDate = req.body.date ? new Date(req.body.date) : new Date();
+    if (Number.isNaN(loggedDate.getTime())) {
+      return res.status(400).json({ message: 'A valid date is required' });
+    }
+
     const entry = await Weight.create({
       user: req.user.id,
-      value: req.body.value,
-      date: req.body.date || new Date(),
+      value,
+      date: loggedDate,
     });
 
-    await User.findByIdAndUpdate(req.user.id, { currentWeight: req.body.value });
+    await User.findByIdAndUpdate(req.user.id, { $set: { currentWeight: value } });
     return res.status(201).json(entry);
   } catch (error) {
     return next(error);

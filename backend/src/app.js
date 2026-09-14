@@ -17,11 +17,20 @@ import { sanitizeRequest } from './middleware/sanitize.js';
 dotenv.config();
 
 export const app = express();
+const allowedOrigins = (process.env.CLIENT_URL || 'http://localhost:5173,http://localhost:8081,http://localhost:19006')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.CLIENT_URL?.split(',') || '*',
+    origin(origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error('Origin not allowed by CORS'));
+    },
     credentials: true,
   }),
 );
